@@ -4,53 +4,61 @@
     <meta charset="UTF-8">
     <title>SHRI STATS</title>
     <style>
+        html, body {
+            margin: 0;
+        }
+
         img {
             max-width: 800px;
         }
+
         #app {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            margin: 12px;
         }
     </style>
 </head>
 <body>
 <div id="app">
-    <div id="title"><h1>Loading some beautiful NASA images... </h1></div>
+    <div id="title"></div>
 </div>
-<a href="https://www.nasa.gov/multimedia/imagegallery/index.html" target="_blank">
-    <img src="https://www.nasa.gov/sites/default/files/thumbnails/image/wallpaper_gamma_rays.jpeg"/>
-</a>
 <script>
-    var dataset = [
+	var dataset = [
 		"https://www.nasa.gov/sites/default/files/thumbnails/image/wallpaper_gamma_rays.jpeg",
 		"https://www.nasa.gov/sites/default/files/thumbnails/image/curiosity_selfie.jpg",
-        "https://apod.nasa.gov/apod/image/2110/IrisGhost_LeoShatz_RevB.jpg",
-        "https://eoimages.gsfc.nasa.gov/images/imagerecords/148000/148990/erie_hwk_2020313_lrg.jpg"
-    ];
+		"https://apod.nasa.gov/apod/image/2110/IrisGhost_LeoShatz_RevB.jpg",
+		"https://eoimages.gsfc.nasa.gov/images/imagerecords/148000/148990/erie_hwk_2020313_lrg.jpg"
+	];
 
-	async function renderImages(id, dataset) {
-		return new Promise(resolve => function() {
-			var parentContainer = document.getElementById(id);
-			var totalImages = dataset.length;
-			for (var i = 0; i < dataset.length; i++) {
-				var newImage = new Image();
-				newImage.onload = function () {
-					parentContainer.append(newImage);
-					totalImages--;
-					if (totalImages === 0) {
-                        resolve();
-					}
-				}
-				newImage.src = dataset[i];
+	function downloadImage(url) {
+		return new Promise(function (resolve) {
+			var newImage = new Image();
+			newImage.onload = function () {
+				resolve(newImage);
 			}
-        })
+			newImage.src = url + '?v=' + Math.random(); //cache suppressing
+		});
 	}
 
+	var appContainer = document.getElementById('app');
+	var totalImages = dataset.length;
+	var loadedImages = 0;
+	appContainer.innerHTML = '<h1 id="title">Loading ' + loadedImages + ' of ' + totalImages + ' beautiful NASA images... </h1>';
 
-	renderImages('app',dataset)
-        .then(function(){
-			document.getElementById('title').innerHTML('<h1>Loading completed!</h1>');
-        });
+	for (var i = 0; i < dataset.length; i++) {
+		downloadImage(dataset[i])
+			.then(function (image) {
+				appContainer.append(image);
+				loadedImages++;
+				if (loadedImages === totalImages) {
+					document.getElementById('title').innerText = 'Loading completed';
+				} else {
+					document.getElementById('title').innerText = 'Loading ' + loadedImages + ' of ' + totalImages + ' beautiful NASA images...';
+				}
+			});
+	}
 
 </script>
 </body>
