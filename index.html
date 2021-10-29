@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SHRI STATS</title>
+    <title>SHRI INDEX</title>
     <style>
         html, body {
             margin: 0;
@@ -24,6 +24,21 @@
 <div id="app">
     <div id="title"></div>
 </div>
+<script src="uuid.js"></script>
+<script src="send.js"></script>
+<script>
+    var counter = new Counter();
+	counter.init(window.currentUuid, String(Math.random()).substr(2, 12), 'index.html');
+	counter.setAdditionalParams({
+		env: 'production',
+		platform: 'touch'
+	});
+
+	if (performance && performance.timing) {
+		counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);
+		counter.send('ttfb', performance.timing.responseEnd - performance.timing.requestStart);
+    }
+</script>
 <script>
 	var dataset = [
 		"https://www.nasa.gov/sites/default/files/thumbnails/image/wallpaper_gamma_rays.jpeg",

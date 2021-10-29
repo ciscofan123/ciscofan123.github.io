@@ -1,0 +1,1 @@
+window.currentUuid = '307775d3-ee71-432e-9854-ca2fcf8ba456';
