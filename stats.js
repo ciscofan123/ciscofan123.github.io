@@ -78,7 +78,7 @@ function start(uuid) {
 		.then(result => {
 			let data = prepareData(result);
 
-			calcMetricsByDate(data, 'index.html', '2021-11-29');
+			calcMetricsByDate(data, 'index.html', new Date().toISOString().slice(0, 10));
 
 			// добавить свои сценарии, реализовать функции выше
 		});
