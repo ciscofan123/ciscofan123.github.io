@@ -25,7 +25,8 @@
 <script src="uuid.js"></script>
 <script src="stats.js"></script>
 <script>
-	start(window.currentUuid);
+    var today = new Date().toISOString().slice(0, 10);
+	start(window.currentUuid, today, today);
 </script>
 </body>
 </html>

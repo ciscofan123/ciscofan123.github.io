@@ -29,15 +29,40 @@
 <script>
     var counter = new Counter();
 	counter.init(window.currentUuid, String(Math.random()).substr(2, 12), 'index.html');
+
+	var platform = 'desktop';
+	if (
+		window.navigator.userAgent
+		&& /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+	) {
+		platform = 'touch';
+	}
+
 	counter.setAdditionalParams({
 		env: 'production',
-		platform: 'touch'
+		platform: platform
 	});
 
 	if (performance && performance.timing) {
 		counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);
 		counter.send('ttfb', performance.timing.responseEnd - performance.timing.requestStart);
     }
+
+	document.addEventListener("DOMContentLoaded", function () {
+		var navigations = performance.getEntriesByType('navigation');
+		if (navigations.length) {
+			counter.send('domComplete', navigations[0].domComplete);
+		}
+		setTimeout(function(){
+			var resources = performance.getEntriesByType("resource");
+			for (var i = 0; i < resources.length; i++) {
+				if (resources[i].initiatorType && resources[i].initiatorType === 'img') {
+					counter.send('imgLoad', resources[i].duration);
+                }
+            }
+		},3000);
+	});
+
 </script>
 <script>
 	var dataset = [
